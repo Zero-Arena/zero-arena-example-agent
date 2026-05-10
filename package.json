@@ -1,0 +1,18 @@
+{
+  "name": "zero-arena-examples",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Reference agents and end-to-end demo flows for the Zero Arena SDK.",
+  "scripts": {
+    "01:run": "tsx 01-rsi-agent-btc-spot/run.ts",
+    "01:backtest": "tsx 01-rsi-agent-btc-spot/run.ts --backtest-only"
+  },
+  "dependencies": {
+    "zeroarena": "file:../sdk"
+  },
+  "devDependencies": {
+    "tsx": "^4.7.0",
+    "typescript": "^5.5.0"
+  }
+}
