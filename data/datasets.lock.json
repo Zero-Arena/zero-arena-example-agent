@@ -1,0 +1,15 @@
+{
+  "BTCUSDT-1h-spot": {
+    "symbol": "BTCUSDT",
+    "interval": "1h",
+    "market": "spot",
+    "source": "binance",
+    "rootHash": "0xe695cf9cd588c84637e431a036a438861b3107fda1594cd31eacd35413f6fe3f",
+    "datasetHash": "0xf248ab764d96e5a65c595ea24169b9494db6842a106500d3e6a5ae465d8fce23",
+    "startTs": 1775779200000,
+    "endTs": 1778414400000,
+    "candleCount": 733,
+    "uploadedAt": "2026-05-10T12:43:20.908Z",
+    "history": []
+  }
+}
