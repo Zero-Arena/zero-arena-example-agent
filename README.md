@@ -2,15 +2,31 @@
 
 End-to-end walkthroughs for the `zeroarena` SDK. Not published to npm.
 
-| Example | Market | What it shows |
+| Folder | Status | What it shows |
 | - | - | - |
-| `00-binance-ingest/` | — | Fetch BTC/USDT and 0G/USDT OHLCV (spot + perp) from Binance, normalize, hash, upload to 0G Storage. Run this once before the others. |
-| `01-rsi-agent-btc-spot/` | BTC spot | Rule-based RSI mean reversion. The canonical 5-minute install-and-run demo. Full backtest → certify → mint flow. |
-| `02-claude-llm-agent-0g-spot/` | 0G spot | One example LLM-based agent — Claude via `@anthropic-ai/sdk`. The model is the developer's choice; this is just a reference for the LLM pattern. Swap in GPT, Gemini, a self-hosted Llama, or anything else with no SDK changes. |
-| `03-perp-momentum-agent/` | BTC perp | Leveraged momentum agent. Exercises the perp code path: leverage, 8h funding accrual, isolated-margin liquidation. |
-| `04-transfer-flow/` | — | ERC-7857 oracle re-encryption transfer between two wallets. |
+| [`00-binance-ingest/`](./00-binance-ingest/) | shipped | Bootstrap + incremental update of the canonical BTC/USDT 1h dataset on 0G Storage. Maintains `data/datasets.lock.json`. **Run this first.** |
+| [`agent-starter/`](./agent-starter/) | shipped | **Copy-and-edit template** for new developers. `agent.ts` is the only file you touch — replace `decide()` with your strategy. `run.ts` handles backtest → certify → mint for you. |
+| [`01-rsi-agent-btc-spot/`](./01-rsi-agent-btc-spot/) | shipped | Reference strategy: rule-based RSI mean reversion on the live BTC/USDT dataset. Same surface as the starter, fully filled in. |
+| `02-claude-llm-agent-0g-spot/` | planned | LLM-based agent (Claude via `@anthropic-ai/sdk`). Model choice is the developer's; the example is just a reference for the LLM pattern. T2 caveat applies in v0.1. |
+| `03-perp-momentum-agent/` | planned | Leveraged momentum agent on BTC perp. Exercises leverage, 8h funding accrual, isolated-margin liquidation. |
+| `04-transfer-flow/` | planned | ERC-7857 oracle re-encryption transfer between two wallets. |
 
 Each example folder has its own README and a single `run.ts` you can execute against Galileo testnet.
+
+## Quick start (5 minutes)
+
+```bash
+npm install
+npm run 00:ingest          # bootstrap BTC/USDT 1h dataset on 0G (one-time)
+npm run starter -- --backtest-only   # smoke-test the template offline
+npm run starter            # full e2e: backtest → certify → mint (needs sdk/.env)
+```
+
+If you only want to see the canonical RSI agent run:
+
+```bash
+npm run 01:run             # same flow, with the strategy filled in
+```
 
 ---
 

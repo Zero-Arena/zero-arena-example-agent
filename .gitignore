@@ -8,3 +8,8 @@ dist/
 # AES key persistence (per-user, never commit)
 .zeroarena/
 *.key
+
+# Binance ingest artifacts — only the lock file (datasets.lock.json) is
+# committed; the actual CSV bytes live on 0G Storage.
+data/*.csv
+!01-rsi-agent-btc-spot/data/btc-usdt-1h.csv
