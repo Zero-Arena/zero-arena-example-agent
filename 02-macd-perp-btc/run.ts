@@ -1,21 +1,9 @@
-// 02-macd-perp-btc — runs the leveraged momentum agent against a bundled
-// LCG-synthetic perp fixture. Pure backtest: no chain calls, no 0G
-// Storage round-trip.
-//
-// Why offline-only for now: the canonical perp dataset on 0G Storage
-// requires perp ingestion in zero-arena-bacend, which lands later in
-// the roadmap. The deterministic fixture here lets devs exercise the
-// full perp math (leverage, 8h funding accrual, SL/TP, liquidation)
-// without any external dependency.
-//
-// Run:
-//   npm run 02:backtest                   — from examples/
-//   npx tsx 02-macd-perp-btc/run.ts       — from anywhere via tsx
+// MACD momentum on BTC perp, offline fixture. No chain calls.
+// Run: npm run 02:backtest
 
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { runBacktest, type BacktestOptions } from 'zeroarena';
-import { StorageAdapter } from 'zeroarena/dist/storage/StorageAdapter.js';
+import { parseDatasetFile, runBacktest, type BacktestOptions } from 'zeroarena';
 import MacdPerpAgent from './agent.js';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -31,7 +19,7 @@ const BACKTEST_OPTS: BacktestOptions = {
 };
 
 async function main(): Promise<void> {
-  const dataset = await StorageAdapter.parseDatasetFile(FIXTURE_CSV);
+  const dataset = await parseDatasetFile(FIXTURE_CSV);
   console.log(`▸ dataset (offline LCG perp fixture): ${dataset.candles.length} candles`);
   console.log(`  datasetHash=${dataset.datasetHash}`);
   console.log(`  market=${dataset.meta.market} granularity=${dataset.meta.granularity}`);

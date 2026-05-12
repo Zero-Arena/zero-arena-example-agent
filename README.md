@@ -63,6 +63,8 @@ export class MyAgent extends Agent {
 }
 ```
 
+All imports come from the top-level `zeroarena` package — no deep `dist/` paths.
+
 The engine pre-computes indicators on every bar (`obs.rsi14`, `obs.macd`,
 `obs.macdSignal`, `obs.ema12`, `obs.ema26`), so your `decide()` is just
 "signal in, action out." Anything you put in `toJSON()` becomes part of

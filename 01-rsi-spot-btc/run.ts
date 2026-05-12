@@ -1,12 +1,6 @@
-// End-to-end demo: backtest → certify → mint, against real Binance BTC/USDT
-// 15-minute data anchored on 0G Storage (maintained by zero-arena-bacend).
-//
-// Modes:
-//   tsx run.ts                  — full e2e on the live 0G-anchored dataset
-//                                 (requires .env + a populated datasets.lock.json
-//                                 produced by `cd ../zero-arena-bacend && npm run dataset:upload`)
-//   tsx run.ts --backtest-only  — fast offline smoke against the bundled LCG
-//                                 fixture (1h synthetic data); no chain or storage calls.
+// backtest → certify → mint on BTC/USDT 15m spot.
+// Default: live 0G dataset, requires examples/.env.
+// `--backtest-only`: offline fixture, no chain calls.
 
 import { readFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
@@ -14,12 +8,13 @@ import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   ZeroArena,
+  configFromEnv,
+  loadEnv,
+  parseDatasetFile,
   runBacktest,
   type BacktestOptions,
   type Dataset,
 } from 'zeroarena';
-import { StorageAdapter } from 'zeroarena/dist/storage/StorageAdapter.js';
-import { configFromEnv, loadEnv } from 'zeroarena/dist/cli/env.js';
 import RsiAgent from './agent.js';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -42,12 +37,11 @@ async function main() {
   let za: ZeroArena | undefined;
 
   if (backtestOnly) {
-    dataset = await StorageAdapter.parseDatasetFile(FIXTURE_CSV);
+    dataset = await parseDatasetFile(FIXTURE_CSV);
     console.log(`▸ dataset (offline LCG fixture): ${dataset.candles.length} candles`);
     console.log(`  datasetHash=${dataset.datasetHash}`);
   } else {
-    loadEnv(resolve(HERE, '..', '..', 'sdk', '.env'));
-    loadEnv();
+    loadEnv(resolve(HERE, '..', '.env'));
     za = new ZeroArena(configFromEnv());
 
     if (!existsSync(LOCK_PATH)) {
