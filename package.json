@@ -3,12 +3,11 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "description": "Reference agents and end-to-end demo flows for the Zero Arena SDK.",
+  "description": "Reference agents for the Zero Arena SDK. Two patterns: rule-based spot, rule-based perp.",
   "scripts": {
-    "01:run": "tsx 01-rsi-agent-btc-spot/run.ts",
-    "01:backtest": "tsx 01-rsi-agent-btc-spot/run.ts --backtest-only",
-    "starter": "tsx agent-starter/run.ts",
-    "starter:backtest": "tsx agent-starter/run.ts --backtest-only"
+    "01:run": "tsx 01-rsi-spot-btc/run.ts",
+    "01:backtest": "tsx 01-rsi-spot-btc/run.ts --backtest-only",
+    "02:backtest": "tsx 02-macd-perp-btc/run.ts"
   },
   "dependencies": {
     "zeroarena": "file:../sdk"

@@ -9,7 +9,7 @@ dist/
 .zeroarena/
 *.key
 
-# Binance ingest artifacts — only the lock file (datasets.lock.json) is
-# committed; the actual CSV bytes live on 0G Storage.
+# Cache / live data — committed fixtures are exceptions below.
 data/*.csv
-!01-rsi-agent-btc-spot/data/btc-usdt-1h.csv
+!01-rsi-spot-btc/data/btc-usdt-1h.csv
+!02-macd-perp-btc/data/btc-perp-fixture.csv
