@@ -5,7 +5,6 @@
   "type": "module",
   "description": "Reference agents and end-to-end demo flows for the Zero Arena SDK.",
   "scripts": {
-    "00:ingest": "tsx 00-binance-ingest/ingest.ts",
     "01:run": "tsx 01-rsi-agent-btc-spot/run.ts",
     "01:backtest": "tsx 01-rsi-agent-btc-spot/run.ts --backtest-only",
     "starter": "tsx agent-starter/run.ts",
