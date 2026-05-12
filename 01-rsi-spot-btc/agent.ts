@@ -1,4 +1,4 @@
-// 01-rsi-agent-btc-spot — canonical 5-minute demo agent.
+// 01-rsi-spot-btc — canonical 5-minute demo agent.
 //
 // Rule-based RSI mean reversion on BTC/USDT spot (long-only). The agent
 // goes long when RSI(14) drops below `oversold` and flat when it rises
