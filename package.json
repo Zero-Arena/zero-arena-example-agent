@@ -7,7 +7,8 @@
   "scripts": {
     "01:run": "tsx 01-rsi-spot-btc/run.ts",
     "01:backtest": "tsx 01-rsi-spot-btc/run.ts --backtest-only",
-    "02:backtest": "tsx 02-macd-perp-btc/run.ts"
+    "02:backtest": "tsx 02-macd-perp-btc/run.ts",
+    "03:paper": "tsx 03-paper-run/run.ts"
   },
   "dependencies": {
     "zeroarena": "file:../sdk"

@@ -6,8 +6,9 @@ Reference agents for the [`zeroarena`](https://github.com/Zero-Arena/zero-arena-
 | - | - | - | - |
 | [`01-rsi-spot-btc/`](./01-rsi-spot-btc/) | spot | rule-based, long-only | Full pipeline: backtest → certify → mint |
 | [`02-macd-perp-btc/`](./02-macd-perp-btc/) | perp | rule-based, long/short, 5× | Leverage, 8h funding, SL/TP, liquidation. Offline only. |
+| [`03-paper-run/`](./03-paper-run/) | spot | paper trading | RFC-001 preview: bar-by-bar `PaperEngine` + cumulative hash chain. Proves byte-equality with static `BacktestEngine`. Offline only. |
 
-Both are deterministic — same agent + same dataset → same `runHash` on every machine.
+All deterministic — same agent + same dataset → same `runHash` on every machine.
 
 ## Run
 
@@ -15,6 +16,7 @@ Both are deterministic — same agent + same dataset → same `runHash` on every
 npm install
 npm run 01:backtest     # spot, offline fixture, no .env needed
 npm run 02:backtest     # perp, offline fixture
+npm run 03:paper        # paper-trading + hash chain demo, offline
 ```
 
 For the full live flow (certify + mint on Galileo), see [`01-rsi-spot-btc/README.md`](./01-rsi-spot-btc/).
