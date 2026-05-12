@@ -2,12 +2,14 @@
 
 The canonical "5-minute install-and-run" demo for the Zero Arena SDK.
 
-A simple rule-based RSI(14) mean-reversion agent runs against a deterministic
-10-day BTC/USDT 1h fixture. The flow demonstrates the full v0.1 surface:
-**backtest → certify (T2) → mint as ERC-7857 iNFT**.
+A simple rule-based RSI(14) mean-reversion agent. The default mode runs
+against the live BTC/USDT **15-minute** dataset on 0G Storage (maintained
+by [`zero-arena-bacend`](../../zero-arena-bacend/)). The flow demonstrates
+the full v0.1 surface: **backtest → certify (T2) → mint as ERC-7857 iNFT**.
 
-The fixture (`data/btc-usdt-1h.csv`) is generated from a seeded LCG, so its
-`datasetHash` is stable across machines without needing 0G Storage.
+For offline iteration, `--backtest-only` reads a deterministic 1h LCG
+fixture (`data/btc-usdt-1h.csv`) whose `datasetHash` is stable across
+machines — no chain calls, no 0G Storage required.
 
 ## Run it
 
@@ -61,4 +63,4 @@ Certificates issued by this demo are tagged `trustTier: T2`:
   against the same dataset and assert the same `runHash`.
 - **T3 (TEE-attested)** — runs inside 0G Compute as a generic confidential
   substrate; no source disclosure required to verify. **Ships in v0.2** —
-  see [`CLAUDE.md` §3 and §14](../../CLAUDE.md).
+  see [`CLAUDE.md` 3 and 14](../../CLAUDE.md).

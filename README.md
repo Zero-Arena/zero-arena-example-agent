@@ -4,7 +4,7 @@ End-to-end walkthroughs for the `zeroarena` SDK. Not published to npm.
 
 | Folder | Status | What it shows |
 | - | - | - |
-| [`00-binance-ingest/`](./00-binance-ingest/) | shipped | Bootstrap + incremental update of the canonical BTC/USDT 1h dataset on 0G Storage. Maintains `data/datasets.lock.json`. **Run this first.** |
+| [`../zero-arena-bacend/`](../zero-arena-bacend/) | shipped | **Price-feed backend.** Polls Binance every 30 min for 15-minute BTC/USDT candles and maintains `data/datasets.lock.json`. Run it once (or leave it running) before any of the agents below. |
 | [`agent-starter/`](./agent-starter/) | shipped | **Copy-and-edit template** for new developers. `agent.ts` is the only file you touch — replace `decide()` with your strategy. `run.ts` handles backtest → certify → mint for you. |
 | [`01-rsi-agent-btc-spot/`](./01-rsi-agent-btc-spot/) | shipped | Reference strategy: rule-based RSI mean reversion on the live BTC/USDT dataset. Same surface as the starter, fully filled in. |
 | `02-claude-llm-agent-0g-spot/` | planned | LLM-based agent (Claude via `@anthropic-ai/sdk`). Model choice is the developer's; the example is just a reference for the LLM pattern. T2 caveat applies in v0.1. |
@@ -16,9 +16,12 @@ Each example folder has its own README and a single `run.ts` you can execute aga
 ## Quick start (5 minutes)
 
 ```bash
+# 1. Bootstrap the BTC/USDT 15m dataset on 0G (one-time).
+cd ../zero-arena-bacend && npm install && npm run dataset:upload && cd ../examples
+
+# 2. Smoke-test the template offline, then run the full e2e flow.
 npm install
-npm run 00:ingest          # bootstrap BTC/USDT 1h dataset on 0G (one-time)
-npm run starter -- --backtest-only   # smoke-test the template offline
+npm run starter -- --backtest-only
 npm run starter            # full e2e: backtest → certify → mint (needs sdk/.env)
 ```
 
@@ -48,22 +51,23 @@ Every example explicitly states the trust tier of the certificate it produces. v
 
 ```bash
 npm install
-cp .env.example .env  # fill PRIVATE_KEY (Galileo testnet) + BINANCE_API_KEY (read-only, optional)
+cp .env.example .env  # fill PRIVATE_KEY (Galileo testnet)
 
-# 1. One-time: fetch + upload the BTC/0G corpus to 0G Storage.
-npx tsx 00-binance-ingest/ingest.ts
+# 1. One-time: fetch + upload the BTC/USDT 15m corpus to 0G Storage.
+#    See ../zero-arena-bacend/README.md for the full backend reference.
+cd ../zero-arena-bacend && npm install && npm run dataset:upload && cd ../examples
 
 # 2. Run any example. Datasets resolve from data/datasets.lock.json automatically.
 npx tsx 01-rsi-agent-btc-spot/run.ts
 ```
 
-The `data/datasets.lock.json` file is checked into git. It maps `(asset, market)` pairs to their 0G Storage root hashes and dataset hashes, so every run on every machine anchors to the same bytes. Re-running `00-binance-ingest` will append new windows; it does not overwrite existing entries.
+The `data/datasets.lock.json` file is checked into git. It maps `(asset, market)` pairs to their 0G Storage root hashes and dataset hashes, so every run on every machine anchors to the same bytes. The backend's `start` command re-runs the upload step every 30 minutes when `BACKEND_AUTO_UPLOAD=true`.
 
 ---
 
 ## Notes on data sources
 
-- **BTC/USDT spot** — Binance public REST `/api/v3/klines`. 1h candles, 365-day rolling window.
+- **BTC/USDT spot** — Binance public REST `/api/v3/klines`. 15-minute candles, 365-day rolling window. Maintained by [`zero-arena-bacend`](../zero-arena-bacend/).
 - **BTC/USDT perp** — Binance Futures `/fapi/v1/klines` for prices, `/fapi/v1/fundingRate` for the 8h funding series. Funding accruals are baked into the dataset CSV so the backtest stays deterministic.
 - **0G/USDT spot** — Binance if listed at the time of ingestion. Otherwise falls back to a DEX OHLCV aggregator. The dataset metadata records `source: "binance"` or `source: "dex:<aggregator>"` so verifiers can re-derive.
 - **0G/USDT perp** — Binance Futures if listed; otherwise this market is omitted in the v0.1 examples.

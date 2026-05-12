@@ -32,12 +32,14 @@ and fill in `PRIVATE_KEY`, `ZA_ADDR_CERT`, `ZA_ADDR_INFT`, `ZA_ADDR_ORACLE`.
 ### 2. Bootstrap the dataset (one-time)
 
 ```bash
-npm run 00:ingest
+cd ../zero-arena-bacend && npm install && npm run dataset:upload && cd ../examples
 ```
 
-Pulls BTC/USDT 1h candles from Binance starting 2025-01-01, uploads to
-0G Storage, writes the `rootHash` into `data/datasets.lock.json`. Re-run
-daily to extend the dataset; the script only fetches the delta.
+Pulls BTC/USDT **15-minute** candles from Binance starting 2025-01-01,
+uploads to 0G Storage, writes the `rootHash` into
+`../zero-arena-bacend/data/datasets.lock.json`. Re-run any time to extend
+the dataset; the script only fetches the delta. Leave `npm run dataset:start` running
+to keep it fresh on a 30-minute cadence.
 
 ### 3. Edit `agent.ts`
 
@@ -106,12 +108,12 @@ agent-starter/
 ## Common questions
 
 **Can I use a different dataset?** Yes — point `loadDataset({ rootHash })`
-at any rootHash you've uploaded. The fixture flow assumes BTC/USDT 1h spot
-because that's what `00-binance-ingest` bootstraps.
+at any rootHash you've uploaded. The default flow assumes BTC/USDT 15m
+spot because that's what `zero-arena-bacend` maintains.
 
 **Can I use perp instead of spot?** Yes — change `BACKTEST_OPTS.market` to
 `'perp'` and add `leverage` / `liquidationMarginBps`. The dataset must
-also be a perp dataset (run `00-binance-ingest` with a perp symbol).
+also be a perp dataset (run the backend with a perp symbol).
 
 **My run loses money. Can I still mint?** Not on the deployed contract
 defaults (`minTotalReturnBps = 0`, `minSharpeX1000 = 1000`). The point of
@@ -127,4 +129,4 @@ upload. Authorized verifiers can re-run only if you share the AES key
 **What's coming in v0.2?** TEE attestation via 0G Compute. Same SDK calls,
 but the run executes inside a hardware enclave (Intel TDX + NVIDIA
 H100/H200), so a third party can verify without touching your code. See
-[`CLAUDE.md` §3 + §14](../../CLAUDE.md).
+[`CLAUDE.md` 3 + 14](../../CLAUDE.md).
