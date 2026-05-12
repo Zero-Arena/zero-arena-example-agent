@@ -74,8 +74,7 @@ To certify the run on Galileo testnet and mint an iNFT pointed at it:
 
 2. **Set up your wallet**:
    - Fund it at <https://faucet.0g.ai>.
-   - Copy `../../sdk/.env.example` → `../../sdk/.env` and fill in
-     `PRIVATE_KEY` (and verify the Galileo contract addresses).
+   - Copy `../.env.example` → `../.env` and fill in `PRIVATE_KEY` (Galileo addresses are pre-filled).
 
 3. **Run the full pipeline**:
    ```bash
