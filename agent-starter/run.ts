@@ -7,8 +7,9 @@
 //   npm run starter -- --backtest-only   — backtest without chain calls
 //
 // What it does, step by step:
-//   1. Load the canonical BTC/USDT dataset from 0G Storage (rootHash from
-//      ../data/datasets.lock.json — bootstrapped by `npm run 00:ingest`).
+//   1. Load the canonical BTC/USDT 15m dataset from 0G Storage. The
+//      rootHash is pinned in `zero-arena-bacend/data/datasets.lock.json`
+//      and maintained by the backend service (see ../../zero-arena-bacend/).
 //   2. Run a deterministic backtest of YOUR agent against that data.
 //   3. Encrypt the run log with AES-256-GCM, upload to 0G Storage,
 //      anchor a Certificate on 0G Chain.
@@ -31,8 +32,8 @@ import { configFromEnv, loadEnv } from 'zeroarena/dist/cli/env.js';
 import MyAgent from './agent.js';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const LOCK_PATH = resolve(HERE, '..', 'data', 'datasets.lock.json');
-const DATASET_KEY = 'BTCUSDT-1h-spot';
+const LOCK_PATH = resolve(HERE, '..', '..', 'zero-arena-bacend', 'data', 'datasets.lock.json');
+const DATASET_KEY = 'BTCUSDT-15m-spot';
 
 // ─── tunables you may want to change ────────────────────────────────────
 const AGENT_NAME = 'My First Agent';                      // shows up on the iNFT
@@ -57,13 +58,13 @@ async function main() {
 
   if (!existsSync(LOCK_PATH)) {
     throw new Error(
-      `${LOCK_PATH} not found. Run 'npm run 00:ingest' first to bootstrap the BTC/USDT dataset on 0G Storage.`,
+      `${LOCK_PATH} not found. Bootstrap the dataset first: cd ../zero-arena-bacend && npm run dataset:upload`,
     );
   }
   const lock = JSON.parse(await readFile(LOCK_PATH, 'utf8')) as Record<string, { rootHash: string; candleCount: number }>;
   const entry = lock[DATASET_KEY];
   if (!entry) {
-    throw new Error(`Lock has no entry for ${DATASET_KEY}. Re-run 'npm run 00:ingest'.`);
+    throw new Error(`Lock has no entry for ${DATASET_KEY}. Re-run the backend: cd ../zero-arena-bacend && npm run dataset:upload`);
   }
   console.log(`▸ loading dataset from 0G Storage… (${entry.candleCount} candles)`);
   console.log(`  rootHash=${entry.rootHash}`);

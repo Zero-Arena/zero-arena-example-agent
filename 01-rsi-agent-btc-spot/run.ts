@@ -1,11 +1,12 @@
 // End-to-end demo: backtest → certify → mint, against real Binance BTC/USDT
-// 1h data anchored on 0G Storage (via 00-binance-ingest).
+// 15-minute data anchored on 0G Storage (maintained by zero-arena-bacend).
 //
 // Modes:
 //   tsx run.ts                  — full e2e on the live 0G-anchored dataset
-//                                 (requires .env + a populated datasets.lock.json)
+//                                 (requires .env + a populated datasets.lock.json
+//                                 produced by `cd ../zero-arena-bacend && npm run dataset:upload`)
 //   tsx run.ts --backtest-only  — fast offline smoke against the bundled LCG
-//                                 fixture; no chain or storage calls.
+//                                 fixture (1h synthetic data); no chain or storage calls.
 
 import { readFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
@@ -22,9 +23,9 @@ import { configFromEnv, loadEnv } from 'zeroarena/dist/cli/env.js';
 import RsiAgent from './agent.js';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const FIXTURE_CSV = resolve(HERE, 'data', 'btc-usdt-1h.csv');
-const LOCK_PATH = resolve(HERE, '..', 'data', 'datasets.lock.json');
-const DATASET_KEY = 'BTCUSDT-1h-spot';
+const FIXTURE_CSV = resolve(HERE, 'data', 'btc-usdt-1h.csv'); // LCG synthetic, offline-only
+const LOCK_PATH = resolve(HERE, '..', '..', 'zero-arena-bacend', 'data', 'datasets.lock.json');
+const DATASET_KEY = 'BTCUSDT-15m-spot';
 
 const BACKTEST_OPTS: BacktestOptions = {
   initialBalance: 10_000,
@@ -51,13 +52,13 @@ async function main() {
 
     if (!existsSync(LOCK_PATH)) {
       throw new Error(
-        `${LOCK_PATH} not found. Run \`npm run 00:ingest\` first to bootstrap the BTC/USDT dataset on 0G Storage.`,
+        `${LOCK_PATH} not found. Bootstrap the dataset first: cd ../zero-arena-bacend && npm run dataset:upload`,
       );
     }
     const lock = JSON.parse(await readFile(LOCK_PATH, 'utf8')) as Record<string, { rootHash: string }>;
     const entry = lock[DATASET_KEY];
     if (!entry) {
-      throw new Error(`Lock file has no entry for ${DATASET_KEY}. Re-run \`npm run 00:ingest\`.`);
+      throw new Error(`Lock file has no entry for ${DATASET_KEY}. Re-run the backend: cd ../zero-arena-bacend && npm run dataset:upload`);
     }
     console.log(`▸ loading dataset from 0G Storage… rootHash=${entry.rootHash}`);
     dataset = await za.loadDataset({ rootHash: entry.rootHash });
@@ -94,7 +95,7 @@ async function main() {
     agent,
     certificate: cert,
     name: 'RSI BTC Spot v1',
-    description: 'RSI(14) mean-reversion on BTC/USDT 1h spot. Reference agent.',
+    description: 'RSI(14) mean-reversion on BTC/USDT 15m spot. Reference agent.',
   });
   console.log(`  tokenId:      ${inft.tokenId}`);
   console.log(`  metadataHash: ${inft.metadataHash}`);
