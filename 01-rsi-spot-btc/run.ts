@@ -2,11 +2,10 @@
 // Default: live 0G dataset, requires examples/.env.
 // `--backtest-only`: offline fixture, no chain calls.
 
-import { readFile } from 'node:fs/promises';
-import { existsSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
+  CANONICAL_DATASETS,
   ZeroArena,
   configFromEnv,
   loadEnv,
@@ -19,7 +18,6 @@ import RsiAgent from './agent.js';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const FIXTURE_CSV = resolve(HERE, 'data', 'btc-usdt-1h.csv'); // LCG synthetic, offline-only
-const LOCK_PATH = resolve(HERE, '..', '..', 'zero-arena-bacend', 'data', 'datasets.lock.json');
 const DATASET_KEY = 'BTCUSDT-15m-spot';
 
 const BACKTEST_OPTS: BacktestOptions = {
@@ -44,15 +42,9 @@ async function main() {
     loadEnv(resolve(HERE, '..', '.env'));
     za = new ZeroArena(configFromEnv());
 
-    if (!existsSync(LOCK_PATH)) {
-      throw new Error(
-        `${LOCK_PATH} not found. Bootstrap the dataset first: cd ../zero-arena-bacend && npm run dataset:upload`,
-      );
-    }
-    const lock = JSON.parse(await readFile(LOCK_PATH, 'utf8')) as Record<string, { rootHash: string }>;
-    const entry = lock[DATASET_KEY];
+    const entry = CANONICAL_DATASETS[DATASET_KEY];
     if (!entry) {
-      throw new Error(`Lock file has no entry for ${DATASET_KEY}. Re-run the backend: cd ../zero-arena-bacend && npm run dataset:upload`);
+      throw new Error(`CANONICAL_DATASETS has no entry for ${DATASET_KEY}.`);
     }
     console.log(`▸ loading dataset from 0G Storage… rootHash=${entry.rootHash}`);
     dataset = await za.loadDataset({ rootHash: entry.rootHash });

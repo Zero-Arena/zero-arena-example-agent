@@ -4,11 +4,10 @@
 // key the agent uses a deterministic offline fallback so the pipeline still
 // runs end-to-end on Galileo.
 
-import { readFile } from 'node:fs/promises';
-import { existsSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
+  CANONICAL_DATASETS,
   ZeroArena,
   configFromEnv,
   loadEnv,
@@ -18,7 +17,6 @@ import {
 import LlmAgent from './agent.js';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const LOCK_PATH = resolve(HERE, '..', '..', 'zero-arena-bacend', 'data', 'datasets.lock.json');
 const DATASET_KEY = '0GUSDT-15m-spot';
 
 const BACKTEST_OPTS: BacktestOptions = {
@@ -32,14 +30,12 @@ async function main() {
   loadEnv(resolve(HERE, '..', '.env'));
   const za = new ZeroArena(configFromEnv());
 
-  if (!existsSync(LOCK_PATH)) {
+  const entry = CANONICAL_DATASETS[DATASET_KEY];
+  if (!entry) {
     throw new Error(
-      `${LOCK_PATH} not found. Bootstrap the dataset first: cd ../zero-arena-bacend && BACKEND_SYMBOL=0GUSDT BACKEND_BOOTSTRAP_START=2025-09-22 npm run dataset:upload`,
+      `CANONICAL_DATASETS has no entry for ${DATASET_KEY} — add it by running \`npx zeroarena dataset ingest --symbol 0GUSDT --interval 15m --from 2025-09-22 --upload\` then updating sdk/src/datasets.ts.`,
     );
   }
-  const lock = JSON.parse(await readFile(LOCK_PATH, 'utf8')) as Record<string, { rootHash: string }>;
-  const entry = lock[DATASET_KEY];
-  if (!entry) throw new Error(`Lock has no entry for ${DATASET_KEY}.`);
 
   console.log(`▸ loading dataset from 0G Storage… rootHash=${entry.rootHash}`);
   const dataset = await za.loadDataset({ rootHash: entry.rootHash });
