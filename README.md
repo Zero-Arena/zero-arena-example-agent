@@ -1,13 +1,15 @@
 # Examples
 
-Reference agents for the [`zeroarena`](https://github.com/Zero-Arena/zero-arena-sdk) SDK. Two patterns — pick the one that fits your strategy.
+Reference agents for the [`zeroarena`](https://github.com/Zero-Arena/zero-arena-sdk) SDK. Four patterns — pick the one that fits your strategy.
 
 | Folder | Market | Strategy | Demonstrates |
 | - | - | - | - |
 | [`01-rsi-spot-btc/`](./01-rsi-spot-btc/) | spot | rule-based, long-only | Full pipeline: backtest → certify → mint |
 | [`02-macd-perp-btc/`](./02-macd-perp-btc/) | perp | rule-based, long/short, 5× | Leverage, 8h funding, SL/TP, liquidation. Offline only. |
+| [`03-llm-spot-0g/`](./03-llm-spot-0g/) | spot | LLM (Anthropic Claude by default) | Model-agnostic `decide()` — swap providers without changing the pipeline. T2 caveat. |
+| [`04-transfer-flow/`](./04-transfer-flow/) | — | ERC-7857 oracle transfer | Mint → transfer → recipient owns the iNFT + holds the decryption key. |
 
-Both are deterministic — same agent + same dataset → same `runHash` on every machine.
+Examples 01, 02, 03 are deterministic when run against a fixed dataset (with the caveat in 03 that LLM responses can drift across calls).
 
 ## Run
 
@@ -15,6 +17,8 @@ Both are deterministic — same agent + same dataset → same `runHash` on every
 npm install
 npm run 01:backtest     # spot, offline fixture, no .env needed
 npm run 02:backtest     # perp, offline fixture
+npm run 03:run          # LLM agent on 0G/USDT (needs .env; falls back offline w/o API key)
+npm run 04:transfer     # oracle-attested iNFT transfer (needs oracle service + a minted iNFT)
 ```
 
 For the full live flow (certify + mint on Galileo), see [`01-rsi-spot-btc/README.md`](./01-rsi-spot-btc/).
