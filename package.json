@@ -3,13 +3,17 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "description": "Reference agents for the Zero Arena SDK. Two patterns: rule-based spot, rule-based perp.",
+  "description": "Reference agents for the Zero Arena SDK: rule-based spot, rule-based perp, LLM spot, and an ERC-7857 transfer demo.",
   "scripts": {
     "01:run": "tsx 01-rsi-spot-btc/run.ts",
     "01:backtest": "tsx 01-rsi-spot-btc/run.ts --backtest-only",
-    "02:backtest": "tsx 02-macd-perp-btc/run.ts"
+    "02:backtest": "tsx 02-macd-perp-btc/run.ts",
+    "03:run": "tsx 03-llm-spot-0g/run.ts",
+    "04:transfer": "tsx 04-transfer-flow/run.ts"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.96.0",
+    "ethers": "^6.13.0",
     "zeroarena": "file:../sdk"
   },
   "devDependencies": {
