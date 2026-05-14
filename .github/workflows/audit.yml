@@ -1,0 +1,37 @@
+name: Audit
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: "0 6 * * 1"
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+      - run: npm ci
+      # Offline backtest of example 01 against the bundled LCG fixture —
+      # exercises the SDK without needing 0G Storage or Galileo gas.
+      - run: npm run 01:backtest
+
+  npm-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+      - run: npm ci
+      - name: Fail on high-or-critical advisories
+        run: npm audit --audit-level=high
+      - name: Warn on moderate (non-blocking)
+        if: always()
+        run: npm audit --audit-level=moderate || true
