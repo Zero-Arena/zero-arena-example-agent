@@ -12,7 +12,13 @@
     "03:run": "tsx 03-llm-spot-0g/run.ts",
     "04:transfer": "tsx 04-transfer-flow/run.ts",
     "multi:mint": "tsx multi-mint/run.ts",
-    "multi:backtest": "tsx multi-mint/run.ts --backtest-only"
+    "multi:backtest": "tsx multi-mint/run.ts --backtest-only",
+    "season:status": "tsx scripts/season-status.ts",
+    "season:create": "tsx scripts/create-season.ts",
+    "season:enroll-all": "tsx scripts/enroll-all.ts",
+    "season:roster": "tsx scripts/build-roster.ts",
+    "season:backfill-all": "tsx scripts/backfill-all.ts",
+    "admin:set-thresholds": "tsx scripts/set-thresholds.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.96.0",
