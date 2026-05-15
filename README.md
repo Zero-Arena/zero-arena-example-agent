@@ -1,14 +1,28 @@
 # Examples
 
-Reference agents for the [`zeroarena`](https://github.com/Zero-Arena/zero-arena-sdk) SDK. Eight strategies + a multi-mint orchestrator + season scripts — pick the one that fits.
+Reference agents for the [`zeroarena`](https://github.com/Zero-Arena/zero-arena-sdk) SDK. Eight strategies + a multi-mint orchestrator + the full Arena Season pipeline.
 
 > **v0.2 scope: spot canonical.** Examples 01, 03, 05–08 are the supported v0.2 path. Example 02 (`02-macd-perp-btc`) exercises the perp code path and runs offline only — perp is promoted to canonical in v0.3.
 
 [![Dashboard](https://img.shields.io/badge/dashboard-live-22c55e)](https://zero-arena-fe.vercel.app) [![Oracle](https://img.shields.io/badge/oracle-live-22c55e)](https://transfer-oracle-production-f390.up.railway.app/health) [![npm](https://img.shields.io/npm/v/zeroarena?color=22c55e&label=zeroarena)](https://www.npmjs.com/package/zeroarena) [![X](https://img.shields.io/badge/X-%400arena__labs-black?logo=x&logoColor=white)](https://x.com/0arena_labs)
 
-## See your mint live
+## End-to-end arena flow
 
-After `npm run multi:mint`, every certificate + iNFT shows up on the dashboard at [zero-arena-fe.vercel.app](https://zero-arena-fe.vercel.app) within a minute. The leaderboard + agent detail pages read straight from Galileo chain state.
+Backtest → certify → mint **qualifies** your agent. Enroll in a Season → run paper daemon → settle is the **real proof**. Examples here cover every step:
+
+```bash
+# Qualify (the entrance ticket)
+npm run multi:mint                  # backtest → certify → mint a roster of 5 strategies
+
+# Arena (the verdict)
+npm run season:create               # open a fresh season (window, prize pool, dataset spec)
+npm run season:enroll-all 1         # enroll every iNFT in season #1 + LiveCertificate.start
+npm run season:backfill-all         # paper-engine replays Binance candles, commits epochs
+npm run season:status 1             # live ranking + when settle becomes callable
+# settle runs automatically via the season-keeper on the backend (permissionless)
+```
+
+The live ranking, equity charts, and epoch history all show up at [zero-arena-fe.vercel.app](https://zero-arena-fe.vercel.app) within a minute of the first `EpochCommitted` event.
 
 ## Production endpoints (Galileo testnet, chainId 16602)
 
@@ -78,22 +92,22 @@ const cert = await za.certify(result, { onDuplicate: 'skip' });
 
 `multi-mint/run.ts` independently dedupes by scanning chain mints — re-runs without `--force` cost zero gas when nothing changed.
 
-### Arena Seasons
+### Arena Seasons — script reference
 
-The [`scripts/`](./scripts/) folder drives a paper-trading Season end-to-end against the deployed `Season` + `LiveCertificate` contracts on Galileo:
+The [`scripts/`](./scripts/) folder is the canonical operator toolkit for running a Season end-to-end against the deployed `Season` + `LiveCertificate` contracts on Galileo:
 
-```bash
-npm run season:create               # create a new Season (1h window, 0.3 0G prize)
-npm run season:roster               # snapshot 5 unique strategies → season-roster.json
-npm run season:enroll-all 1         # enroll all 5 iNFTs in season #1 + LiveCertificate.start
-npm run season:backfill-all         # paper-engine backfill 3 days for every enrollee
-npm run season:status 1             # live ranking + settle hint
-npm run admin:set-thresholds        # lower iNFT mint thresholds (admin only)
-```
+| Command | Job |
+| - | - |
+| `npm run season:create` | Open a new Season (window, prize pool, dataset spec) |
+| `npm run season:roster` | Snapshot 5 unique strategies → `season-roster.json` |
+| `npm run season:enroll-all <id>` | Enroll every iNFT in season #id + `LiveCertificate.start` |
+| `npm run season:backfill-all` | Replay 3 days of candles, commits epochs to chain |
+| `npm run season:status [<id>]` | Live ranking + settle-readiness |
+| `npm run admin:set-thresholds` | Lower iNFT mint thresholds (admin only) |
 
-The end-to-end demo flow: `create → enroll → backfill → settle` populates the FE's `/season/[id]` and `/agent/[slug]/live` pages with real on-chain data. Settle itself runs via `bacend season settle <id>` from the backend repo (permissionless, anyone can call).
+`create → enroll → backfill → settle` is the real demo path. Settle is permissionless — the season-keeper daemon ([`zero-arena-be`](https://github.com/Zero-Arena/zero-arena-be)) calls it automatically once `endTime` passes, but anyone can.
 
-For the full live flow (certify + mint on Galileo), see [`01-rsi-spot-btc/README.md`](./01-rsi-spot-btc/).
+For the qualifier-only flow (backtest + certify + mint, no Season yet), see [`01-rsi-spot-btc/README.md`](https://github.com/Zero-Arena/zero-arena-example-agent/tree/main/01-rsi-spot-btc).
 
 ## Writing your own agent
 
