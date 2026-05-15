@@ -4,7 +4,7 @@ Reference agents for the [`zeroarena`](https://github.com/Zero-Arena/zero-arena-
 
 > **v0.2 scope: spot canonical.** Examples 01, 03, 05–08 are the supported v0.2 path. Example 02 (`02-macd-perp-btc`) exercises the perp code path and runs offline only — perp is promoted to canonical in v0.3.
 
-[![Dashboard](https://img.shields.io/badge/dashboard-live-22c55e)](https://zero-arena-fe.vercel.app) [![Oracle](https://img.shields.io/badge/oracle-live-22c55e)](https://transfer-oracle-production-f390.up.railway.app/health) [![npm](https://img.shields.io/npm/v/zeroarena?color=22c55e&label=zeroarena)](https://www.npmjs.com/package/zeroarena)
+[![Dashboard](https://img.shields.io/badge/dashboard-live-22c55e)](https://zero-arena-fe.vercel.app) [![Oracle](https://img.shields.io/badge/oracle-live-22c55e)](https://transfer-oracle-production-f390.up.railway.app/health) [![npm](https://img.shields.io/npm/v/zeroarena?color=22c55e&label=zeroarena)](https://www.npmjs.com/package/zeroarena) [![X](https://img.shields.io/badge/X-%400arena__labs-black?logo=x&logoColor=white)](https://x.com/0arena_labs)
 
 ## See your mint live
 
