@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noImplicitOverride": true,
+    "resolveJsonModule": true,
+    "allowImportingTsExtensions": false,
+    "noEmit": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": false
+  },
+  "include": [
+    "01-rsi-spot-btc/**/*.ts",
+    "02-macd-perp-btc/**/*.ts",
+    "03-llm-spot-0g/**/*.ts",
+    "04-transfer-flow/**/*.ts",
+    "05-rsi-aggressive/**/*.ts",
+    "06-ema-crossover/**/*.ts",
+    "07-macd-spot/**/*.ts",
+    "08-bollinger-meanrev/**/*.ts",
+    "multi-mint/**/*.ts",
+    "scripts/**/*.ts"
+  ],
+  "exclude": ["node_modules", "**/node_modules/**", "**/data/**"]
+}
