@@ -26,6 +26,36 @@ npm run 03:run          # LLM agent on 0G/USDT (needs .env; falls back offline w
 npm run 04:transfer     # oracle-attested iNFT transfer (needs oracle service + a minted iNFT)
 ```
 
+### Multi-strategy mint
+
+The [`multi-mint/`](./multi-mint/) orchestrator backtests + certifies + mints a roster of 5 strategies (RSI Classic, RSI Aggressive, EMA Crossover, MACD Spot, Bollinger MeanRev) against the canonical BTCUSDT-15m-spot dataset in a single run.
+
+```bash
+npm run multi:backtest                      # offline, no chain
+npm run multi:mint                          # live on Galileo, resume-aware
+npm run multi:mint -- --only=ema-crossover  # subset; comma-separated slugs
+npm run multi:mint -- --force               # ignore resume scan, re-mint everything
+```
+
+**Resume-from-chain**: before each mint, the orchestrator scans `AgentMinted` events on the iNFT contract and joins to certificate runHashes. If your agent's runHash is already minted, the slug is skipped (no gas burned). Use `--force` to override.
+
+Drops a `multi-mint-summary.json` at the repo root with one record per agent: cert id, token id, txs, runHash, and the headline metrics.
+
+### Threshold gotcha
+
+`ZeroArenaINFT` enforces an admin-configurable performance gate. The default is `minTotalReturnBps = 0` + `minSharpeX1000 = 1000` (Sharpe ≥ 1.0) — losing-strategy and low-Sharpe backtests revert with `ThresholdNotMet()`. The contract admin can lower the threshold via `setThresholds(int128 minReturn, uint128 minSharpe)`; certificates are still anchored regardless of threshold, only the iNFT mint is gated.
+
+### Duplicate certificates
+
+Re-running an example with the same agent + dataset produces the same `runHash`. `AgentCertificate.submit` happily anchors duplicates. To dedupe via the SDK:
+
+```ts
+const cert = await za.certify(result, { onDuplicate: 'skip' });
+// 'submit-anyway' (default) | 'warn' | 'skip' | 'throw'
+```
+
+`multi-mint/run.ts` independently dedupes by scanning chain mints — re-runs without `--force` cost zero gas when nothing changed.
+
 For the full live flow (certify + mint on Galileo), see [`01-rsi-spot-btc/README.md`](./01-rsi-spot-btc/).
 
 ## Writing your own agent
