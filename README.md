@@ -56,6 +56,21 @@ const cert = await za.certify(result, { onDuplicate: 'skip' });
 
 `multi-mint/run.ts` independently dedupes by scanning chain mints — re-runs without `--force` cost zero gas when nothing changed.
 
+### Arena Seasons
+
+The [`scripts/`](./scripts/) folder drives a paper-trading Season end-to-end against the deployed `Season` + `LiveCertificate` contracts on Galileo:
+
+```bash
+npm run season:create               # create a new Season (1h window, 0.3 0G prize)
+npm run season:roster               # snapshot 5 unique strategies → season-roster.json
+npm run season:enroll-all 1         # enroll all 5 iNFTs in season #1 + LiveCertificate.start
+npm run season:backfill-all         # paper-engine backfill 3 days for every enrollee
+npm run season:status 1             # live ranking + settle hint
+npm run admin:set-thresholds        # lower iNFT mint thresholds (admin only)
+```
+
+The end-to-end demo flow: `create → enroll → backfill → settle` populates the FE's `/season/[id]` and `/agent/[slug]/live` pages with real on-chain data. Settle itself runs via `bacend season settle <id>` from the backend repo (permissionless, anyone can call).
+
 For the full live flow (certify + mint on Galileo), see [`01-rsi-spot-btc/README.md`](./01-rsi-spot-btc/).
 
 ## Writing your own agent
