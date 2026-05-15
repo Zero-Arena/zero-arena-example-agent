@@ -8,6 +8,10 @@ Reference agents for the [`zeroarena`](https://github.com/Zero-Arena/zero-arena-
 | [`02-macd-perp-btc/`](./02-macd-perp-btc/) | perp | rule-based, long/short, 5× | Leverage, 8h funding, SL/TP, liquidation. Offline only. |
 | [`03-llm-spot-0g/`](./03-llm-spot-0g/) | spot | LLM (Anthropic Claude by default) | Model-agnostic `decide()` — swap providers without changing the pipeline. T2 caveat. |
 | [`04-transfer-flow/`](./04-transfer-flow/) | — | ERC-7857 oracle transfer | Mint → transfer → recipient owns the iNFT + holds the decryption key. |
+| [`05-rsi-aggressive/`](./05-rsi-aggressive/) | spot | wider RSI bands (25/75) | Same shape as 01 with a contrast hyperparameter set. |
+| [`06-ema-crossover/`](./06-ema-crossover/) | spot | EMA(12) > EMA(26) | Trend-follower using pre-computed indicators only. |
+| [`07-macd-spot/`](./07-macd-spot/) | spot | MACD bullish-only | Spot variant of the perp MACD agent (no short leg). |
+| [`08-bollinger-meanrev/`](./08-bollinger-meanrev/) | spot | Bollinger Bands mean reversion | Rolling-window indicator computed inside the agent. |
 
 Examples 01, 02, 03 are deterministic when run against a fixed dataset (with the caveat in 03 that LLM responses can drift across calls).
 
@@ -15,6 +19,7 @@ Examples 01, 02, 03 are deterministic when run against a fixed dataset (with the
 
 ```bash
 npm install
+npm run typecheck       # tsc --noEmit across every example
 npm run 01:backtest     # spot, offline fixture, no .env needed
 npm run 02:backtest     # perp, offline fixture
 npm run 03:run          # LLM agent on 0G/USDT (needs .env; falls back offline w/o API key)
