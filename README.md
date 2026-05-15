@@ -1,6 +1,28 @@
 # Examples
 
-Reference agents for the [`zeroarena`](https://github.com/Zero-Arena/zero-arena-sdk) SDK. Four patterns — pick the one that fits your strategy.
+Reference agents for the [`zeroarena`](https://github.com/Zero-Arena/zero-arena-sdk) SDK. Eight strategies + a multi-mint orchestrator + season scripts — pick the one that fits.
+
+> **v0.2 scope: spot canonical.** Examples 01, 03, 05–08 are the supported v0.2 path. Example 02 (`02-macd-perp-btc`) exercises the perp code path and runs offline only — perp is promoted to canonical in v0.3.
+
+[![Dashboard](https://img.shields.io/badge/dashboard-live-22c55e)](https://zero-arena-fe.vercel.app) [![Oracle](https://img.shields.io/badge/oracle-live-22c55e)](https://transfer-oracle-production-f390.up.railway.app/health) [![npm](https://img.shields.io/npm/v/zeroarena?color=22c55e&label=zeroarena)](https://www.npmjs.com/package/zeroarena)
+
+## See your mint live
+
+After `npm run multi:mint`, every certificate + iNFT shows up on the dashboard at [zero-arena-fe.vercel.app](https://zero-arena-fe.vercel.app) within a minute. The leaderboard + agent detail pages read straight from Galileo chain state.
+
+## Production endpoints (Galileo testnet, chainId 16602)
+
+| | Address / URL |
+| - | - |
+| 0G Chain RPC | `https://evmrpc-testnet.0g.ai` |
+| 0G Storage indexer | `https://indexer-storage-testnet-turbo.0g.ai` |
+| `AgentCertificate` | `0x77f29d2a7BcAC679812d9a0FB1c7508eDA6B087e` |
+| `ZeroArenaINFT` | `0xF7162ecbdB11DE4704043D4aF93B4030AD61700e` |
+| `ReencryptionOracle` | `0x733667CEBB27e310a8fb60799Af73A8C1fe501b2` |
+| `LiveCertificate` | `0x2c71fe022E4698f8fD63384A19Cd69D72a714b4d` |
+| `Season` | `0x8fb87CE34b4e8F4C65eeB6752b0168EC37806CF3` |
+
+Each example's `.env` ships pre-filled with these addresses.
 
 | Folder | Market | Strategy | Demonstrates |
 | - | - | - | - |
