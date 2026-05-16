@@ -1,6 +1,11 @@
-// Create Season #1 on-chain. Window opens in 5 minutes (gives enrollment
-// time) and runs for 60 minutes. Prize pool 0.3 0G — admin (Wallet A)
-// transfers it as msg.value.
+// Create a Season on-chain. Defaults: enrollment window opens in 5min,
+// runs for 60min, prize pool 0.3 0G. Override via env for shorter test
+// runs:
+//
+//   SEASON_ENROLL_SEC=180 SEASON_RUN_SEC=1620 SEASON_PRIZE_OG=0.05 \
+//     npm run season:create
+//
+// Admin (Wallet A) transfers the prize as msg.value.
 
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -30,10 +35,18 @@ async function main() {
   if (!block) throw new Error('no latest block');
   const now = Number(block.timestamp);
 
-  const datasetSpec = ethers.keccak256(ethers.toUtf8Bytes('BTCUSDT-15m-spot'));
-  const startTime = BigInt(now + 5 * 60); // enrollment window: 5 min
-  const endTime = BigInt(now + 65 * 60); // total run: ~1h after start
-  const prizePool = ethers.parseEther('0.3');
+  const enrollSec = Number(process.env.SEASON_ENROLL_SEC ?? '300'); // default 5 min
+  const runSec = Number(process.env.SEASON_RUN_SEC ?? '3600'); // default 60 min
+  const prizeOg = process.env.SEASON_PRIZE_OG ?? '0.3';
+  const marketName = (process.env.SEASON_MARKET ?? 'spot').toLowerCase();
+  const market = marketName === 'perp' ? 1 : 0;
+  const maxLeverage = Number(process.env.SEASON_MAX_LEVERAGE ?? (market === 1 ? '5' : '1'));
+  const datasetSpecLabel = process.env.SEASON_DATASET_LABEL ?? `BTCUSDT-15m-${marketName}`;
+
+  const datasetSpec = ethers.keccak256(ethers.toUtf8Bytes(datasetSpecLabel));
+  const startTime = BigInt(now + enrollSec);
+  const endTime = BigInt(now + enrollSec + runSec);
+  const prizePool = ethers.parseEther(prizeOg);
 
   console.log(`creating season:`);
   console.log(`  datasetSpec  ${datasetSpec}`);
@@ -44,16 +57,19 @@ async function main() {
   const spec = {
     datasetSpec,
     initialBalance: 10_000n,
-    feeBps: 10,
+    feeBps: market === 1 ? 5 : 10,
     slippageBps: 5,
-    market: 0, // spot
-    maxLeverage: 1,
+    market,
+    maxLeverage,
     startTime,
     endTime,
     prizePool,
     creator: ethers.ZeroAddress,
     settled: false,
   };
+
+  console.log(`  market       ${marketName} (enum=${market}, maxLev=${maxLeverage}x)`);
+  console.log(`  datasetSpec  ${datasetSpecLabel}`);
 
   const tx = await season.createSeason(spec, {
     value: prizePool,
