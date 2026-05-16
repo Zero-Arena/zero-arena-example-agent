@@ -29,10 +29,7 @@ async function main() {
   const beforeS = await inft.minSharpeX1000();
   console.log(`current  minReturn=${beforeR}  minSharpe=${beforeS}`);
 
-  const tx = await inft.setThresholds(-1_000_000n, 0n, {
-    type: 0,
-    gasPrice: 3_000_000_000n,
-  });
+  const tx = await inft.setThresholds(-1_000_000n, 0n);
   console.log(`tx       ${tx.hash}`);
   const rec = await tx.wait();
   console.log(`✓ confirmed in block ${rec?.blockNumber}`);

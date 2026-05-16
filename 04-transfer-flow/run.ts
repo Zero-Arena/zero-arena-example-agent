@@ -9,7 +9,7 @@
 //
 // Required env (examples/.env):
 //   PRIVATE_KEY              — current owner. Must own RECIPIENT_TOKEN_ID.
-//   ZA_RPC, ZA_INDEXER       — Galileo endpoints.
+//   ZA_RPC, ZA_INDEXER       — 0G mainnet endpoints.
 //   ZA_ADDR_CERT/INFT/ORACLE — v0.2 addresses.
 //   ORACLE_URL               — running oracle service from zero-arena-bacend.
 //   RECIPIENT_PRIVATE_KEY    — pre-generated recipient key (optional; script
@@ -73,7 +73,7 @@ async function main() {
   });
   console.log(`  txHash:          ${result.txHash}`);
   console.log(`  newMetadataHash: ${result.newMetadataHash}`);
-  console.log(`  explorer:        https://chainscan-galileo.0g.ai/tx/${result.txHash}`);
+  console.log(`  explorer:        https://chainscan.0g.ai/tx/${result.txHash}`);
 
   console.log('\n▸ post-transfer state');
   const ownerAfter = await ownerOf(provider, inftAddr, tokenId);

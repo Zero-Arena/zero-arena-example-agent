@@ -33,8 +33,11 @@ async function main() {
   loadEnv(resolve(HERE, '..', '.env'));
 
   const seasonId = Number(process.argv[2] ?? 1);
-  const seasonAddr = '0x8fb87CE34b4e8F4C65eeB6752b0168EC37806CF3';
-  const liveAddr = '0x2c71fe022E4698f8fD63384A19Cd69D72a714b4d';
+  const seasonAddr = process.env.ZA_ADDR_SEASON!;
+  const liveAddr = process.env.ZA_ADDR_LIVE_CERT!;
+  if (!seasonAddr || !liveAddr) {
+    throw new Error('ZA_ADDR_SEASON + ZA_ADDR_LIVE_CERT must be set in examples/.env');
+  }
 
   const provider = new ethers.JsonRpcProvider(process.env.ZA_RPC!);
   const wallet = new ethers.Wallet(process.env.PRIVATE_KEY!, provider);
@@ -53,10 +56,7 @@ async function main() {
     if (isEnrolled) {
       console.log(`  already enrolled — skipping enroll`);
     } else {
-      const tx = await season.enroll(seasonId, e.tokenId, {
-        type: 0,
-        gasPrice: 3_000_000_000n,
-      });
+      const tx = await season.enroll(seasonId, e.tokenId);
       console.log(`  enroll tx  ${tx.hash}`);
       const rec = await tx.wait();
       console.log(`  ✓ block ${rec?.blockNumber}`);
@@ -66,10 +66,7 @@ async function main() {
     if (isActive) {
       console.log(`  paper run already active — skipping start`);
     } else {
-      const tx = await live.start(e.tokenId, e.runHash, {
-        type: 0,
-        gasPrice: 3_000_000_000n,
-      });
+      const tx = await live.start(e.tokenId, e.runHash);
       console.log(`  start tx   ${tx.hash}`);
       const rec = await tx.wait();
       console.log(`  ✓ block ${rec?.blockNumber}`);

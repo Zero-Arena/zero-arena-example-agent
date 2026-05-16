@@ -2,7 +2,7 @@
 
 Reference agents for the [`zeroarena`](https://github.com/Zero-Arena/zero-arena-sdk) SDK. Eight strategies + a multi-mint orchestrator + the full Arena Season pipeline.
 
-> **v0.2 scope: spot canonical.** Examples 01, 03, 05–08 are the supported v0.2 path. Example 02 (`02-macd-perp-btc`) exercises the perp code path and runs offline only — perp is promoted to canonical in v0.3.
+> **0G mainnet only** (chainId 16661) from `zeroarena@0.5.0`. Spot + perp are both canonical: example 01 demonstrates the spot pipeline end-to-end on chain, example 02 (`02-macd-perp-btc`) the perp engine (leverage, funding, SL/TP, liquidation).
 
 [![Dashboard](https://img.shields.io/badge/dashboard-live-22c55e)](https://zero-arena-fe.vercel.app) [![Oracle](https://img.shields.io/badge/oracle-live-22c55e)](https://transfer-oracle-production-f390.up.railway.app/health) [![npm](https://img.shields.io/npm/v/zeroarena?color=22c55e&label=zeroarena)](https://www.npmjs.com/package/zeroarena) [![X](https://img.shields.io/badge/X-%400arena__labs-black?logo=x&logoColor=white)](https://x.com/0arena_labs)
 
@@ -24,24 +24,24 @@ npm run season:status 1             # live ranking + when settle becomes callabl
 
 The live ranking, equity charts, and epoch history all show up at [zero-arena-fe.vercel.app](https://zero-arena-fe.vercel.app) within a minute of the first `EpochCommitted` event.
 
-## Production endpoints (Galileo testnet, chainId 16602)
+## Production endpoints (0G mainnet, chainId 16661)
 
 | | Address / URL |
 | - | - |
-| 0G Chain RPC | `https://evmrpc-testnet.0g.ai` |
-| 0G Storage indexer | `https://indexer-storage-testnet-turbo.0g.ai` |
-| `AgentCertificate` | `0x77f29d2a7BcAC679812d9a0FB1c7508eDA6B087e` |
-| `ZeroArenaINFT` | `0xF7162ecbdB11DE4704043D4aF93B4030AD61700e` |
-| `ReencryptionOracle` | `0x733667CEBB27e310a8fb60799Af73A8C1fe501b2` |
-| `LiveCertificate` | `0x2c71fe022E4698f8fD63384A19Cd69D72a714b4d` |
-| `Season` | `0x8fb87CE34b4e8F4C65eeB6752b0168EC37806CF3` |
+| 0G Chain RPC | `https://evmrpc.0g.ai` |
+| 0G Storage indexer | `https://indexer-storage-turbo.0g.ai` |
+| `AgentCertificate` | `0x21a5DEA59cfA07B261d389A9554477e137805c2f` |
+| `ZeroArenaINFT` | `0x4Bd4d45f206861aa7cD4421785a316A1dD06036f` |
+| `ReencryptionOracle` | `0x63909dA30b0d65ad72b32b3C8C82515f7BFA6Fd6` |
+| `LiveCertificate` | `0x168c244c872f5FC2D737D3126D08e9EEE45fFbc7` |
+| `Season` | `0x4e900860565F9D399B7295c0D28CC7954202524e` |
 
-Each example's `.env` ships pre-filled with these addresses.
+`.env.example` ships pre-filled with these addresses.
 
 | Folder | Market | Strategy | Demonstrates |
 | - | - | - | - |
 | [`01-rsi-spot-btc/`](./01-rsi-spot-btc/) | spot | rule-based, long-only | Full pipeline: backtest → certify → mint |
-| [`02-macd-perp-btc/`](./02-macd-perp-btc/) | perp | rule-based, long/short, 5× | Leverage, 8h funding, SL/TP, liquidation. Offline only. |
+| [`02-macd-perp-btc/`](./02-macd-perp-btc/) | perp | rule-based, long/short, 5× | Leverage, 8h funding, SL/TP, liquidation. Offline backtest fixture; arena flow targets BTCUSDT-15m-perp live. |
 | [`03-llm-spot-0g/`](./03-llm-spot-0g/) | spot | LLM (Anthropic Claude by default) | Model-agnostic `decide()` — swap providers without changing the pipeline. T2 caveat. |
 | [`04-transfer-flow/`](./04-transfer-flow/) | — | ERC-7857 oracle transfer | Mint → transfer → recipient owns the iNFT + holds the decryption key. |
 | [`05-rsi-aggressive/`](./05-rsi-aggressive/) | spot | wider RSI bands (25/75) | Same shape as 01 with a contrast hyperparameter set. |
@@ -68,7 +68,7 @@ The [`multi-mint/`](./multi-mint/) orchestrator backtests + certifies + mints a 
 
 ```bash
 npm run multi:backtest                      # offline, no chain
-npm run multi:mint                          # live on Galileo, resume-aware
+npm run multi:mint                          # live on 0G mainnet, resume-aware
 npm run multi:mint -- --only=ema-crossover  # subset; comma-separated slugs
 npm run multi:mint -- --force               # ignore resume scan, re-mint everything
 ```
@@ -94,7 +94,7 @@ const cert = await za.certify(result, { onDuplicate: 'skip' });
 
 ### Arena Seasons — script reference
 
-The [`scripts/`](./scripts/) folder is the canonical operator toolkit for running a Season end-to-end against the deployed `Season` + `LiveCertificate` contracts on Galileo:
+The [`scripts/`](./scripts/) folder is the canonical operator toolkit for running a Season end-to-end against the deployed `Season` + `LiveCertificate` contracts on 0G mainnet:
 
 | Command | Job |
 | - | - |
@@ -142,4 +142,4 @@ Break any of these and your `runHash` stops being reproducible.
 
 ## Output
 
-Every `run.ts` prints, in order: `runHash`, metrics (return, Sharpe, drawdown, win rate, final equity), and on the live flow also `certId`, `tokenId`, and explorer links. Look anything up at <https://chainscan-galileo.0g.ai>.
+Every `run.ts` prints, in order: `runHash`, metrics (return, Sharpe, drawdown, win rate, final equity), and on the live flow also `certId`, `tokenId`, and explorer links. Look anything up at <https://chainscan.0g.ai>.

@@ -18,7 +18,7 @@ jobs:
           cache: "npm"
       - run: npm ci
       # Offline backtest of example 01 against the bundled LCG fixture —
-      # exercises the SDK without needing 0G Storage or Galileo gas.
+      # exercises the SDK without needing 0G Storage or mainnet gas.
       - run: npm run 01:backtest
 
   npm-audit:

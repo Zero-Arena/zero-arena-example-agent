@@ -190,7 +190,7 @@ async function main() {
     console.log(`  ▸ certify…`);
     const cert = await za.certify(result, { trustTier: 'T2' });
     console.log(`    certId  ${cert.certId}`);
-    console.log(`    tx      https://chainscan-galileo.0g.ai/tx/${cert.txHash}`);
+    console.log(`    tx      https://chainscan.0g.ai/tx/${cert.txHash}`);
 
     console.log(`  ▸ mint…`);
     const inft = await za.mintAgent({
@@ -200,7 +200,7 @@ async function main() {
       description: item.description,
     });
     console.log(`    tokenId ${inft.tokenId}`);
-    console.log(`    tx      https://chainscan-galileo.0g.ai/tx/${inft.txHash}\n`);
+    console.log(`    tx      https://chainscan.0g.ai/tx/${inft.txHash}\n`);
 
     records.push({
       slug: item.slug,
@@ -272,9 +272,9 @@ async function scanExistingMints(): Promise<
   const inft = new ethers.Contract(inftAddr, INFT_ABI, provider);
   const cert = new ethers.Contract(certAddr, CERT_ABI, provider);
 
-  // Scan from deploy block (chainscan shows v0.2 contracts deployed at block
-  // 33200264 — same constant the FE uses).
-  const DEPLOY_BLOCK = 33_200_264;
+  // 0G mainnet deploy block — same value as @zero-arena/contracts and the FE
+  // ship under the `mainnet` network entry.
+  const DEPLOY_BLOCK = 33_417_145;
   const filter = inft.filters.AgentMinted!();
   const logs = await inft.queryFilter(filter, DEPLOY_BLOCK, 'latest');
 

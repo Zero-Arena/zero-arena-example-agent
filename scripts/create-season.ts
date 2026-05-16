@@ -25,7 +25,10 @@ async function main() {
 
   const rpc = process.env.ZA_RPC!;
   const pk = process.env.PRIVATE_KEY!;
-  const seasonAddr = '0x8fb87CE34b4e8F4C65eeB6752b0168EC37806CF3';
+  const seasonAddr = process.env.ZA_ADDR_SEASON!;
+  if (!seasonAddr) {
+    throw new Error('ZA_ADDR_SEASON not set — see examples/.env.example');
+  }
 
   const provider = new ethers.JsonRpcProvider(rpc);
   const wallet = new ethers.Wallet(pk, provider);
@@ -71,11 +74,7 @@ async function main() {
   console.log(`  market       ${marketName} (enum=${market}, maxLev=${maxLeverage}x)`);
   console.log(`  datasetSpec  ${datasetSpecLabel}`);
 
-  const tx = await season.createSeason(spec, {
-    value: prizePool,
-    type: 0,
-    gasPrice: 3_000_000_000n,
-  });
+  const tx = await season.createSeason(spec, { value: prizePool });
   console.log(`tx           ${tx.hash}`);
   const rec = await tx.wait();
   console.log(`✓ confirmed in block ${rec?.blockNumber}`);

@@ -73,7 +73,7 @@ async function main() {
   console.log(`  certId:          ${cert.certId}`);
   console.log(`  storageRootHash: ${cert.storageRootHash}`);
   console.log(`  txHash:          ${cert.txHash}`);
-  console.log(`  explorer:        https://chainscan-galileo.0g.ai/tx/${cert.txHash}`);
+  console.log(`  explorer:        https://chainscan.0g.ai/tx/${cert.txHash}`);
 
   // ── 3. mint iNFT ─────────────────────────────────────────────────────────
   console.log('\n▸ minting iNFT…');
@@ -87,7 +87,7 @@ async function main() {
   console.log(`  metadataHash: ${inft.metadataHash}`);
   console.log(`  storageRoot:  ${inft.storageRoot}`);
   console.log(`  txHash:       ${inft.txHash}`);
-  console.log(`  explorer:     https://chainscan-galileo.0g.ai/tx/${inft.txHash}`);
+  console.log(`  explorer:     https://chainscan.0g.ai/tx/${inft.txHash}`);
 
   console.log('\n✓ done. Trust tier: T2 (commitment + reproducibility). T3 ships in v0.2.');
 }

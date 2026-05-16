@@ -23,8 +23,11 @@ async function main() {
   loadEnv(resolve(HERE, '..', '.env'));
 
   const seasonId = Number(process.argv[2] ?? 1);
-  const seasonAddr = '0x8fb87CE34b4e8F4C65eeB6752b0168EC37806CF3';
-  const liveAddr = '0x2c71fe022E4698f8fD63384A19Cd69D72a714b4d';
+  const seasonAddr = process.env.ZA_ADDR_SEASON!;
+  const liveAddr = process.env.ZA_ADDR_LIVE_CERT!;
+  if (!seasonAddr || !liveAddr) {
+    throw new Error('ZA_ADDR_SEASON + ZA_ADDR_LIVE_CERT must be set in examples/.env');
+  }
 
   const provider = new ethers.JsonRpcProvider(process.env.ZA_RPC!);
   const season = new ethers.Contract(seasonAddr, SEASON_ABI, provider);
@@ -52,11 +55,18 @@ async function main() {
   const participants: bigint[] = await season.getParticipants(seasonId);
   console.log(`\n${participants.length} participants:`);
 
-  const rosterJson = JSON.parse(
-    await readFile(resolve(HERE, '..', 'season-roster.json'), 'utf8'),
-  );
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const nameByToken = new Map<string, string>(rosterJson.entries.map((e: any) => [String(e.tokenId), String(e.name)]));
+  // Roster is optional — falls back to "Token #N" when missing (mainnet trial
+  // doesn't require a multi-mint roster).
+  let nameByToken = new Map<string, string>();
+  try {
+    const rosterJson = JSON.parse(
+      await readFile(resolve(HERE, '..', 'season-roster.json'), 'utf8'),
+    );
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    nameByToken = new Map<string, string>(rosterJson.entries.map((e: any) => [String(e.tokenId), String(e.name)]));
+  } catch {
+    // season-roster.json absent — that's fine for ad-hoc Seasons.
+  }
 
   interface Row {
     tokenId: bigint;

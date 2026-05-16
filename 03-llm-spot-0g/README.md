@@ -20,13 +20,8 @@ ANTHROPIC_API_KEY=sk-ant-… npx tsx 03-llm-spot-0g/run.ts
 
 Prerequisites:
 
-- `examples/.env` filled (PRIVATE_KEY + Galileo addresses)
-- 0G/USDT dataset uploaded to 0G Storage:
-
-  ```bash
-  cd ../zero-arena-bacend
-  BACKEND_SYMBOL=0GUSDT BACKEND_BOOTSTRAP_START=2025-09-22 npm run dataset:upload
-  ```
+- `examples/.env` filled (PRIVATE_KEY + mainnet addresses — already pinned by `.env.example`)
+- 0G/USDT dataset uploaded to 0G mainnet Storage and pinned in `sdk/src/datasets.ts`. If absent, the script throws with a helpful command to bootstrap.
 
 ## Trust tier — read this before you market the cert
 

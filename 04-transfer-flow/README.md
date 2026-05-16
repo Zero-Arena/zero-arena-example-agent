@@ -14,7 +14,7 @@ Walks a minted iNFT through the oracle re-encryption transfer. The script picks 
    npm run oracle:serve
    ```
 
-3. **`examples/.env`** filled (PRIVATE_KEY + Galileo addresses).
+3. **`examples/.env`** filled (PRIVATE_KEY + mainnet addresses — already pinned by `.env.example`).
 4. Optional: `RECIPIENT_PRIVATE_KEY` pre-set. Otherwise the script generates one and prints it once — save it, the recipient needs it to decrypt the new sealed key.
 
 ## Run

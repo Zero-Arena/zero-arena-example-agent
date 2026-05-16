@@ -2,7 +2,7 @@
 //
 // Requires examples/.env and (optionally) ANTHROPIC_API_KEY. Without the
 // key the agent uses a deterministic offline fallback so the pipeline still
-// runs end-to-end on Galileo.
+// runs end-to-end on 0G mainnet.
 
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -59,7 +59,7 @@ async function main() {
   const cert = await za.certify(result, { trustTier: 'T2' });
   console.log(`  certId:   ${cert.certId}`);
   console.log(`  txHash:   ${cert.txHash}`);
-  console.log(`  explorer: https://chainscan-galileo.0g.ai/tx/${cert.txHash}`);
+  console.log(`  explorer: https://chainscan.0g.ai/tx/${cert.txHash}`);
 
   console.log('\n▸ minting iNFT…');
   const inft = await za.mintAgent({
@@ -70,7 +70,7 @@ async function main() {
   });
   console.log(`  tokenId:  ${inft.tokenId}`);
   console.log(`  txHash:   ${inft.txHash}`);
-  console.log(`  explorer: https://chainscan-galileo.0g.ai/tx/${inft.txHash}`);
+  console.log(`  explorer: https://chainscan.0g.ai/tx/${inft.txHash}`);
 
   console.log('\n✓ done. Trust tier: T2.');
   console.log('  LLM responses are recorded in the run log and committed via runHash,');

@@ -22,18 +22,14 @@ new RsiAgent(oversold = 30, overbought = 70, sizeFraction = 0.5);
 # offline, no .env, no chain calls
 npm run 01:backtest
 
-# full pipeline: certify + mint on Galileo (needs ../.env)
+# full pipeline: certify + mint on 0G mainnet (needs ../.env)
 npm run 01:run
 ```
 
 For the full pipeline:
 
-1. Bootstrap the canonical dataset (one-time):
-   ```bash
-   cd ../zero-arena-bacend && npm install && npm run dataset:upload
-   ```
-2. Set up the wallet: fund at <https://faucet.0g.ai>, then `cp ../.env.example ../.env` and fill `PRIVATE_KEY`.
-3. `npm run 01:run`
+1. Set up the wallet: send 0G to your address on mainnet, then `cp ../.env.example ../.env` and fill `PRIVATE_KEY`.
+2. `npm run 01:run` — loads the canonical `BTCUSDT-15m-spot` dataset pinned in the SDK, runs backtest, certifies on chain, mints the iNFT.
 
 Output: `runHash`, metrics, then `certId` + `tokenId` with explorer links. The AES key for the encrypted run log is written to `~/.zeroarena/keys/agent-<tokenId>.key` — **keep it** so future verifiers can decrypt.
 
