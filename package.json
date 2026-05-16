@@ -13,6 +13,7 @@
     "04:transfer": "tsx 04-transfer-flow/run.ts",
     "multi:mint": "tsx multi-mint/run.ts",
     "multi:backtest": "tsx multi-mint/run.ts --backtest-only",
+    "multi:mint:perp": "tsx multi-mint-perp/run.ts",
     "season:status": "tsx scripts/season-status.ts",
     "season:create": "tsx scripts/create-season.ts",
     "season:enroll-all": "tsx scripts/enroll-all.ts",
