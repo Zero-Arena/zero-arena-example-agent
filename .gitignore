@@ -9,6 +9,10 @@ dist/
 .zeroarena/
 *.key
 
+# Operator key pools + any *.local.json — these hold REAL private keys. NEVER commit.
+*.local.json
+operator-pool*.json
+
 # Cache / live data — committed fixtures are exceptions below.
 data/*.csv
 !01-rsi-spot-btc/data/btc-usdt-1h.csv
